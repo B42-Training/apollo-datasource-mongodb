@@ -5,6 +5,7 @@ declare module 'apollo-datasource-mongodb' {
     Collection as MongooseCollection,
     Document,
     Model as MongooseModel,
+    LeanDocument,
   } from 'mongoose'
 
   export type Collection<T extends { [key: string]: any }, U = MongoCollection<T>> = T extends Document
@@ -28,6 +29,8 @@ declare module 'apollo-datasource-mongodb' {
       | (string | number | boolean | ObjectId)[]
   }
 
+  type MongooseDocumentOrMongoCollection<T> = MongoCollection<T> | Document
+
   export interface Options {
     ttl: number
   }
@@ -43,22 +46,22 @@ declare module 'apollo-datasource-mongodb' {
 
     constructor(options: MongoDataSourceConfig<TData>)
 
-    findOneById(
+    protected findOneById(
       id: ObjectId | string,
       options?: Options
-    ): Promise<TData | null | undefined>
+    ): Promise<LeanDocument<TData> | null>
 
-    findManyByIds(
+    protected findManyByIds(
       ids: (ObjectId | string)[],
       options?: Options
-    ): Promise<(TData | null | undefined)[]>
+    ): Promise<(LeanDocument<TData> | null)[]>
 
-    findByFields(
+    protected findByFields(
       fields: Fields,
       options?: Options
-    ): Promise<(TData | null | undefined)[]>
+    ): Promise<(LeanDocument<TData> | null)[]>
 
-    deleteFromCacheById(id: ObjectId | string): Promise<void>
-    deleteFromCacheByFields(fields: Fields): Promise<void>
+    protected deleteFromCacheById(id: ObjectId | string): Promise<void>
+    protected deleteFromCacheByFields(fields: Fields): Promise<void>
   }
 }
