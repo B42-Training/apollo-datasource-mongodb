@@ -46,22 +46,22 @@ declare module 'apollo-datasource-mongodb' {
 
     constructor(options: MongoDataSourceConfig<TData>)
 
-    findOneById(
+    protected findOneById(
       id: ObjectId | string,
       options?: Options
     ): Promise<LeanDocument<TData> | null | undefined>
 
-    findManyByIds(
+    protected findManyByIds(
       ids: (ObjectId | string)[],
       options?: Options
     ): Promise<(LeanDocument<TData> | null | undefined)[]>
 
-    findByFields(
+    protected findByFields(
       fields: Fields,
       options?: Options
     ): Promise<(LeanDocument<TData> | null | undefined)[]>
 
-    deleteFromCacheById(id: ObjectId | string): Promise<void>
+    protected deleteFromCacheById(id: ObjectId | string): Promise<void>
     deleteFromCacheByFields(fields: Fields): Promise<void>
   }
 }
