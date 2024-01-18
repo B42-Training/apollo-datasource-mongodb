@@ -1,24 +1,16 @@
 declare module 'apollo-datasource-mongodb' {
   import { KeyValueCache } from '@apollo/utils.keyvaluecache'
-  import { Collection as MongoCollection, ObjectId } from 'mongodb'
+  import { Collection as MongoCollection, ObjectId, Document } from 'mongodb'
   import {
     Collection as MongooseCollection,
-    Document,
-    Model as MongooseModel,
-    LeanDocument,
+    Model as MongooseModel
   } from 'mongoose'
 
-  export type Collection<T extends { [key: string]: any }, U = MongoCollection<T>> = T extends Document
-    ? MongooseCollection
-    : U
+  export type Collection<T, U = MongoCollection> = T extends Document ? U : MongooseCollection
 
-  export type Model<T, U = MongooseModel<T>> = T extends Document
-    ? U
-    : undefined
+  export type Model<T, U = MongooseModel<T>> = U
 
-  export type ModelOrCollection<T extends { [key: string]: any }, U = Model<T>> = T extends Document
-    ? U
-    : Collection<T>
+  export type ModelOrCollection<T, U = Model<T>> = U | Collection<T>
 
   export interface Fields {
     [fieldName: string]:
@@ -28,8 +20,6 @@ declare module 'apollo-datasource-mongodb' {
       | ObjectId
       | (string | number | boolean | ObjectId)[]
   }
-
-  type MongooseDocumentOrMongoCollection<T> = MongoCollection<T> | Document
 
   export interface Options {
     ttl: number
@@ -49,17 +39,17 @@ declare module 'apollo-datasource-mongodb' {
     protected findOneById(
       id: ObjectId | string,
       options?: Options
-    ): Promise<LeanDocument<TData> | null>
+    ): Promise<TData | null>
 
     protected findManyByIds(
       ids: (ObjectId | string)[],
       options?: Options
-    ): Promise<(LeanDocument<TData> | null)[]>
+    ): Promise<(TData | null)[]>
 
     protected findByFields(
       fields: Fields,
       options?: Options
-    ): Promise<(LeanDocument<TData> | null)[]>
+    ): Promise<(TData | null)[]>
 
     protected deleteFromCacheById(id: ObjectId | string): Promise<void>
     protected deleteFromCacheByFields(fields: Fields): Promise<void>
